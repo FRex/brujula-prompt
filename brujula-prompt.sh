@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function __brujula_prompt() {
-    p=$PWD
+    p="$PWD"
 
     # amount of iterations, could come from an env var later
     x=24
