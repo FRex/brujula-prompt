@@ -7,7 +7,7 @@ function __brujula_prompt() {
     x=24
 
     # c like for loop allows $x, {1..24} syntax wouldn't
-    for (( i=0 ; i<$x ; i++ ))
+    for (( i=0 ; i<x ; i++ ))
     do
         # print yellow path if we reached the root
         if [[ -z "$p" ]]
@@ -20,14 +20,14 @@ function __brujula_prompt() {
         if [[ -f "$p/.git/HEAD" ]]
         then
             # read its only line with no external processes if yes
-            read line < "$p/.git/HEAD"
+            read -r line < "$p/.git/HEAD"
 
             # strip the ref prefix if needed
             trimmedline=${line#ref: refs/heads/}
 
             # prepare the to repo and in repo paths
-            path2=${PWD#$p}
-            path1=${PWD%$path2}
+            path2=${PWD#"$p"}
+            path1=${PWD%"$path2"}
 
             # make in repo path single slash instead of nothing if in repo root dir
             if [[ -z "$path2" ]]
