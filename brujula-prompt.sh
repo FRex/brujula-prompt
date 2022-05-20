@@ -2,7 +2,8 @@
 
 function __brujula_print_deleted_pwd() {
     # amount of iterations, could come from an env var later
-    local x=24
+    # delete dir is a bad case so set a very high limit here
+    local x=240
     local p="$PWD"
 
    # c like for loop allows $x, {1..24} syntax wouldn't
@@ -18,6 +19,13 @@ function __brujula_print_deleted_pwd() {
 
         # cut off one /dir off the end of the path
         p=${p%/*}
+
+        # strange case, can happen with git bash and deleted ramdisk on windows
+        if [ -z "$p" ]
+        then
+            echo -e "\u001b[31m$PWD\u001b[0m"
+            break
+        fi
     done
 }
 
