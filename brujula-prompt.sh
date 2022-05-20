@@ -1,6 +1,36 @@
 #!/bin/bash
 
+function __brujula_print_deleted_pwd() {
+    # amount of iterations, could come from an env var later
+    local x=24
+    local p="$PWD"
+
+   # c like for loop allows $x, {1..24} syntax wouldn't
+    for (( i=0 ; i<x ; i++ ))
+    do
+        if [ -d "$p" ]
+        then
+            local path2=${PWD#"$p"}
+            local path1=${PWD%"$path2"}
+            echo -e "\u001b[33m$path1\u001b[0m\u001b[31m$path2\u001b[0m"
+            break
+        fi
+
+        # cut off one /dir off the end of the path
+        p=${p%/*}
+    done
+}
+
 function __brujula_prompt() {
+    local hiddenfiles=(.*)
+
+    if [[ "${#hiddenfiles[@]}" -lt 2 ]]
+    then
+        __brujula_print_deleted_pwd
+        return
+    fi
+
+
     local p="$PWD"
 
     # amount of iterations, could come from an env var later
