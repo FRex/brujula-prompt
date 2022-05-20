@@ -1,10 +1,10 @@
 #!/bin/bash
 
 function __brujula_prompt() {
-    p="$PWD"
+    local p="$PWD"
 
     # amount of iterations, could come from an env var later
-    x=24
+    local x=24
 
     # c like for loop allows $x, {1..24} syntax wouldn't
     for (( i=0 ; i<x ; i++ ))
@@ -23,20 +23,20 @@ function __brujula_prompt() {
             read -r line < "$p/.git/HEAD"
 
             # strip the ref prefix if needed
-            trimmedline=${line#ref: refs/heads/}
+            local trimmedline=${line#ref: refs/heads/}
 
             # prepare the to repo and in repo paths
-            path2=${PWD#"$p"}
-            path1=${PWD%"$path2"}
+            local path2=${PWD#"$p"}
+            local path1=${PWD%"$path2"}
 
             # make in repo path single slash instead of nothing if in repo root dir
             if [[ -z "$path2" ]]
             then
-                path2='/'
+                local path2='/'
             fi
 
             # print them in different colors
-            fullpath="\u001b[33m$path1\u001b[0m\u001b[32m$path2\u001b[0m"
+            local fullpath="\u001b[33m$path1\u001b[0m\u001b[32m$path2\u001b[0m"
 
             local hiddenfiles=(.*)
 
