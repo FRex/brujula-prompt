@@ -50,7 +50,7 @@ function __brujula_prompt() {
         # print yellow path if we reached the root
         if [[ -z "$p" ]]
         then
-            echo -e "\u001b[33m$PWD\u001b[0m"
+            echo -e "\u001b[33m$PWD\u001b[0m ${#hiddenfiles[@]}."
             break
         fi
 
