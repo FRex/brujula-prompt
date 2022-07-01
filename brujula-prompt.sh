@@ -11,6 +11,23 @@ function __brujula_replace_home_prefix() {
     fi
 }
 
+function __brujula_countfiles() {
+    local normalfiles=(*)
+    local count="${#normalfiles[@]}"
+
+    # if nullglob is enabled then count is 0 and we return it directly in else
+    # but if its disabled (by default its disabled) then for empty dirs we
+    # end up with a 1 element array with '*' in it, so this check catches that
+    # and returns 0 as well, we cant just compare 1 element array to '*'
+    # because that would break for dir with single file named '*' in it
+    if [[ "$count" -eq 1 && ! -e "${normalfiles[0]}" ]]
+    then
+        echo 0
+    else
+        echo "$count"
+    fi
+}
+
 function __brujula_print_deleted_pwd() {
     # amount of iterations, could come from an env var later
     # delete dir is a bad case so set a very high limit here
@@ -64,7 +81,7 @@ function __brujula_prompt() {
         then
             local path1
             path1=$(__brujula_replace_home_prefix "$PWD")
-            echo -e "\u001b[33m$path1\u001b[0m ${#hiddenfiles[@]}."
+            echo -e "\u001b[33m$path1\u001b[0m $(__brujula_countfiles).${#hiddenfiles[@]}"
             break
         fi
 
@@ -97,9 +114,9 @@ function __brujula_prompt() {
             # if we stripped ref prefix its a branch HEAD, else its commit
             if [[ "$trimmedline" != "$line" ]]
             then
-                echo -e "$fullpath ${#hiddenfiles[@]}. \u001b[36m($trimmedline)\u001b[0m"
+                echo -e "$fullpath $(__brujula_countfiles).${#hiddenfiles[@]} \u001b[36m($trimmedline)\u001b[0m"
             else
-                echo -e "$fullpath ${#hiddenfiles[@]}. \u001b[32m($trimmedline)\u001b[0m"
+                echo -e "$fullpath $(__brujula_countfiles).${#hiddenfiles[@]} \u001b[32m($trimmedline)\u001b[0m"
             fi
             break
         fi

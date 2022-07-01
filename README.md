@@ -11,6 +11,10 @@ It prints path, split into path to repo and path within the repo, adding a
 single `/` and coloring them differently, and name of the branch or commit
 sha1 (colored differently to additionally signify which one it is).
 
+It also shows count of non-hidden and hidden files, in that order, in format:
+`non-hidden.hidden` after the dir path, since I found that info useful daily
+and it was easy to add, especially hidden files that I often forgot to look for.
+
 ![screenshot1](screenshot1.png)
 
 Very rudimentary, might have mistakes in it, it has no configuration, doesn't
