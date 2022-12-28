@@ -54,6 +54,7 @@ function __brujula_print_deleted_pwd() {
 }
 
 function __brujula_prompt() {
+    local laststatus="$?"
     local hiddenfiles=(.*)
 
     if [[ "${#hiddenfiles[@]}" -lt 2 ]]; then
@@ -100,11 +101,14 @@ function __brujula_prompt() {
 
             local hiddenfiles=(.*)
 
+            # last command time and exit status
+            local lastcommandstatus="$__brujula_lastrealtime $laststatus"
+
             # if we stripped ref prefix its a branch HEAD, else its commit
             if [[ "$trimmedline" != "$line" ]]; then
-                echo -e "$fullpath $(__brujula_countfiles).${#hiddenfiles[@]} \u001b[36m($trimmedline)\u001b[0m"
+                echo -e "$fullpath $(__brujula_countfiles).${#hiddenfiles[@]} \u001b[36m($trimmedline)\u001b[0m $lastcommandstatus"
             else
-                echo -e "$fullpath $(__brujula_countfiles).${#hiddenfiles[@]} \u001b[32m($trimmedline)\u001b[0m"
+                echo -e "$fullpath $(__brujula_countfiles).${#hiddenfiles[@]} \u001b[32m($trimmedline)\u001b[0m $lastcommandstatus"
             fi
             break
         fi
@@ -116,5 +120,7 @@ function __brujula_prompt() {
 
 # for development only (to run without sourcing):
 if [[ "$1" == "run" ]]; then
+    __brujula_prompt
+    __brujula_prompt
     __brujula_prompt
 fi
