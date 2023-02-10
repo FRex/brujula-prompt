@@ -120,7 +120,7 @@ function __brujula_prompt() {
 
 # for development only (to run without sourcing):
 if [[ "$1" == "run" ]]; then
-    __brujula_prompt
-    __brujula_prompt
-    __brujula_prompt
+    time __brujula_prompt
+    time __brujula_prompt
+    time __brujula_prompt
 fi
