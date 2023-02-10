@@ -21,7 +21,7 @@ function __brujula_print_deleted_pwd() {
         if [ -d "$p" ]; then
             local path2=${PWD#"$p"}
             local path1=${PWD%"$path2"}
-            path1=$(__brujula_replace_home_prefix "$path1")
+            #path1=$(__brujula_replace_home_prefix "$path1")
             echo -e "\u001b[33m$path1\u001b[0m\u001b[31m$path2\u001b[0m"
             break
         fi
@@ -70,7 +70,7 @@ function __brujula_prompt() {
         # print yellow path if we reached the root
         if [[ -z "$p" ]]; then
             local path1="$PWD"
-            path1=$(__brujula_replace_home_prefix "$path1")
+            #path1=$(__brujula_replace_home_prefix "$path1")
             echo -e "\u001b[33m$path1\u001b[0m $normalfilescount.$hiddenfilescount"
             break
         fi
@@ -92,7 +92,7 @@ function __brujula_prompt() {
                 local path2='/'
             fi
 
-            path1=$(__brujula_replace_home_prefix "$path1")
+            #path1=$(__brujula_replace_home_prefix "$path1")
 
             # print them in different colors
             local fullpath="\u001b[33m$path1\u001b[0m\u001b[32m$path2\u001b[0m"
