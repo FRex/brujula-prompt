@@ -85,8 +85,8 @@ function __brujula_prompt() {
     for ((i = 0; i < x; i++)); do
         # print yellow path if we reached the root
         if [[ -z "$p" ]]; then
-            local path1
-            path1=$(__brujula_replace_home_prefix "$PWD")
+            local path1="$PWD"
+            path1=$(__brujula_replace_home_prefix "$path1")
             echo -e "\u001b[33m$path1\u001b[0m $normalfilescount.$hiddenfilescount"
             break
         fi
