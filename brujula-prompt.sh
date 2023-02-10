@@ -102,7 +102,7 @@ function __brujula_prompt() {
             local hiddenfiles=(.*)
 
             # last command time and exit status
-            local lastcommandstatus="$__brujula_lastrealtime $laststatus"
+            local lastcommandstatus="$laststatus"
 
             # if we stripped ref prefix its a branch HEAD, else its commit
             if [[ "$trimmedline" != "$line" ]]; then
