@@ -1,15 +1,5 @@
 #!/bin/bash
 
-function __brujula_replace_home_prefix() {
-    # if string starts with $HOME then replace first occurence of $HOME with ~
-    # this is to prevent paths like /x/y/home/name from being affected
-    if [[ $1 =~ ^$HOME.* ]]; then
-        echo "${1//"$HOME"/'~'}"
-    else
-        echo "$1"
-    fi
-}
-
 function __brujula_print_deleted_pwd() {
     # amount of iterations, could come from an env var later
     # delete dir is a bad case so set a very high limit here
@@ -21,7 +11,7 @@ function __brujula_print_deleted_pwd() {
         if [ -d "$p" ]; then
             local path2=${PWD#"$p"}
             local path1=${PWD%"$path2"}
-            #path1=$(__brujula_replace_home_prefix "$path1")
+            [[ $path1 == $HOME* ]] && path1="${path1//"$HOME"/'~'}"
             echo -e "\u001b[33m$path1\u001b[0m\u001b[31m$path2\u001b[0m"
             break
         fi
@@ -70,7 +60,7 @@ function __brujula_prompt() {
         # print yellow path if we reached the root
         if [[ -z "$p" ]]; then
             local path1="$PWD"
-            #path1=$(__brujula_replace_home_prefix "$path1")
+            [[ $path1 == $HOME* ]] && path1="${path1//"$HOME"/'~'}"
             echo -e "\u001b[33m$path1\u001b[0m $normalfilescount.$hiddenfilescount"
             break
         fi
@@ -92,7 +82,8 @@ function __brujula_prompt() {
                 local path2='/'
             fi
 
-            #path1=$(__brujula_replace_home_prefix "$path1")
+            [[ $path1 == $HOME* ]] && path1="${path1//"$HOME"/'~'}"
+
 
             # print them in different colors
             local fullpath="\u001b[33m$path1\u001b[0m\u001b[32m$path2\u001b[0m"
