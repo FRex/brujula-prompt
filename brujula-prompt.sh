@@ -56,10 +56,24 @@ function __brujula_print_deleted_pwd() {
 function __brujula_prompt() {
     local laststatus="$?"
     local hiddenfiles=(.*)
+    local hiddenfilescount="${#hiddenfiles[@]}"
 
-    if [[ "${#hiddenfiles[@]}" -lt 2 ]]; then
+    # each dir has itself . and parent dir .. so less than 2 hidden files = deleted dir
+    if [[ "$hiddenfilescount" -lt 2 ]]; then
         __brujula_print_deleted_pwd
         return
+    fi
+
+    local normalfiles=(*)
+    local normalfilescount="${#normalfiles[@]}"
+
+    # if nullglob is enabled then count is 0 and we return it directly in else
+    # but if its disabled (by default its disabled) then for empty dirs we
+    # end up with a 1 element array with '*' in it, so this check catches that
+    # and returns 0 as well, we cant just compare 1 element array to '*'
+    # because that would break for dir with single file named '*' in it
+    if [[ "$normalfilescount" -eq 1 && ! -e "${normalfiles[0]}" ]]; then
+        normalfilescount=0
     fi
 
     local p="$PWD"
@@ -73,7 +87,7 @@ function __brujula_prompt() {
         if [[ -z "$p" ]]; then
             local path1
             path1=$(__brujula_replace_home_prefix "$PWD")
-            echo -e "\u001b[33m$path1\u001b[0m $(__brujula_countfiles).${#hiddenfiles[@]}"
+            echo -e "\u001b[33m$path1\u001b[0m $normalfilescount.$hiddenfilescount"
             break
         fi
 
@@ -106,9 +120,9 @@ function __brujula_prompt() {
 
             # if we stripped ref prefix its a branch HEAD, else its commit
             if [[ "$trimmedline" != "$line" ]]; then
-                echo -e "$fullpath $(__brujula_countfiles).${#hiddenfiles[@]} \u001b[36m($trimmedline)\u001b[0m $lastcommandstatus"
+                echo -e "$fullpath $normalfilescount.$hiddenfilescount \u001b[36m($trimmedline)\u001b[0m $lastcommandstatus"
             else
-                echo -e "$fullpath $(__brujula_countfiles).${#hiddenfiles[@]} \u001b[32m($trimmedline)\u001b[0m $lastcommandstatus"
+                echo -e "$fullpath $normalfilescount.$hiddenfilescount \u001b[32m($trimmedline)\u001b[0m $lastcommandstatus"
             fi
             break
         fi
