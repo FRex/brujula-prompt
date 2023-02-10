@@ -29,6 +29,14 @@ function __brujula_print_deleted_pwd() {
 
 function __brujula_prompt() {
     local laststatus="$?"
+
+    if [ $laststatus -eq 0 ]
+    then
+        local lastcommandstatus="\u001b[32m$laststatus\u001b[0m"
+    else
+        local lastcommandstatus="\u001b[31m$laststatus\u001b[0m"
+    fi
+
     local hiddenfiles=(.*)
     local hiddenfilescount="${#hiddenfiles[@]}"
 
@@ -61,7 +69,7 @@ function __brujula_prompt() {
         if [[ -z "$p" ]]; then
             local path1="$PWD"
             [[ $path1 == $HOME* ]] && path1="${path1//"$HOME"/'~'}"
-            echo -e "\u001b[33m$path1\u001b[0m $normalfilescount.$hiddenfilescount"
+            echo -e "\u001b[33m$path1\u001b[0m $normalfilescount.$hiddenfilescount $lastcommandstatus"
             break
         fi
 
@@ -89,9 +97,6 @@ function __brujula_prompt() {
             local fullpath="\u001b[33m$path1\u001b[0m\u001b[32m$path2\u001b[0m"
 
             local hiddenfiles=(.*)
-
-            # last command time and exit status
-            local lastcommandstatus="$laststatus"
 
             # if we stripped ref prefix its a branch HEAD, else its commit
             if [[ "$trimmedline" != "$line" ]]; then
