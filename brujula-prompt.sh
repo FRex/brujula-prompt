@@ -30,8 +30,7 @@ function __brujula_print_deleted_pwd() {
 function __brujula_prompt() {
     local laststatus="$?"
 
-    if [ $laststatus -eq 0 ]
-    then
+    if [ $laststatus -eq 0 ]; then
         local lastcommandstatus="\u001b[32m$laststatus\u001b[0m"
     else
         local lastcommandstatus="\u001b[31m$laststatus\u001b[0m"
@@ -93,7 +92,6 @@ function __brujula_prompt() {
 
             [[ $path1 == $HOME* ]] && path1="${path1//"$HOME"/'~'}"
 
-
             # print them in different colors
             local fullpath="\u001b[33m$path1\u001b[0m\u001b[32m$path2\u001b[0m"
 
@@ -115,7 +113,20 @@ function __brujula_prompt() {
 
 # for development only (to run without sourcing):
 if [[ "$1" == "run" ]]; then
-    time __brujula_prompt
-    time __brujula_prompt
-    time __brujula_prompt
+    function __brujula_run() {
+        local before now total reps i
+        before=${EPOCHREALTIME/./}
+        total=0
+        reps=125
+        for ((i = 0; i < reps; i++)); do
+            __brujula_prompt
+            now=${EPOCHREALTIME/./}
+            total="$((total + now - before))"
+            echo "$((now - before)) microseconds"
+            before="$now"
+        done
+        echo "$((total / reps)) microseconds average"
+    }
+
+    __brujula_run
 fi
