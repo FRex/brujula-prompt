@@ -1,7 +1,7 @@
 #!/bin/bash
 # NOTE: this script is meant to be safe to source, pretty much no matter what
 
-function __brujula_print_deleted_pwd() {
+function __brujula_priv_print_deleted_pwd() {
     # amount of iterations, could come from an env var later
     # delete dir is a bad case so set a very high limit here
     local x=240
@@ -114,7 +114,7 @@ function __brujula_prompt() {
 
 # for development only (to run without sourcing):
 if [[ "$1" == "run" ]]; then
-    function __brujula_run() {
+    function __brujula_priv_run() {
         local before now total reps i
         before=${EPOCHREALTIME/./}
         total=0
@@ -129,5 +129,5 @@ if [[ "$1" == "run" ]]; then
         echo "$((total / reps)) microseconds average over $reps runs"
     }
 
-    __brujula_run "$@"
+    __brujula_priv_run "$@"
 fi
