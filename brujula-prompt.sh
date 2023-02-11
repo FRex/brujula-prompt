@@ -1,4 +1,5 @@
 #!/bin/bash
+# NOTE: this script is meant to be safe to source, pretty much no matter what
 
 function __brujula_print_deleted_pwd() {
     # amount of iterations, could come from an env var later
@@ -117,7 +118,7 @@ if [[ "$1" == "run" ]]; then
         local before now total reps i
         before=${EPOCHREALTIME/./}
         total=0
-        reps=125
+        reps="${2:-125}"
         for ((i = 0; i < reps; i++)); do
             __brujula_prompt
             now=${EPOCHREALTIME/./}
@@ -125,8 +126,8 @@ if [[ "$1" == "run" ]]; then
             echo "$((now - before)) microseconds"
             before="$now"
         done
-        echo "$((total / reps)) microseconds average"
+        echo "$((total / reps)) microseconds average over $reps runs"
     }
 
-    __brujula_run
+    __brujula_run "$@"
 fi
