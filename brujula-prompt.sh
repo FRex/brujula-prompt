@@ -64,6 +64,7 @@ function __brujula_prompt() {
     local x=24
 
     # c like for loop allows $x, {1..24} syntax wouldn't
+    local i
     for ((i = 0; i < x; i++)); do
         # print yellow path if we reached the root
         if [[ -z "$p" ]]; then
