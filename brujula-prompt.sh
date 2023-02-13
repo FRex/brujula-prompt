@@ -30,11 +30,32 @@ function __brujula_priv_print_deleted_pwd() {
 
 function __brujula_prompt() {
     local laststatus="$?"
+    local before now elapsed
+
+    now="${EPOCHREALTIME/./}"
+    before="$BRUJULA_EPOCHREALTIME"
+
+    # format time nicely into seconds.milliseconds
+    # add at least two zeroes, so even 1 millisecond becomes at least 001
+    elapsed="00$(((now - before) / 1000))"
+
+    # split and join with a dot 3 digits from the end
+    elapsed="${elapsed::-3}.${elapsed: -3}"
+
+    # remove extra zeroes from the front, in case they were in seconds part
+    [[ ${elapsed::1} == 0 ]] && elapsed="${elapsed##0}"
+    [[ ${elapsed::1} == 0 ]] && elapsed="${elapsed##0}"
+
+    # ensure at least one zero is present, so 123 ms = 0.123 seconds
+    [[ ${elapsed::1} == . ]] && elapsed="0$elapsed"
+
+    # add the unit s for seconds
+    elapsed="${elapsed}s"
 
     if [ $laststatus -eq 0 ]; then
-        local lastcommandstatus="\u001b[32m$laststatus\u001b[0m"
+        local lastcommandstatus="\u001b[32m$laststatus\u001b[0m $elapsed"
     else
-        local lastcommandstatus="\u001b[31m$laststatus\u001b[0m"
+        local lastcommandstatus="\u001b[31m$laststatus\u001b[0m $elapsed"
     fi
 
     local hiddenfiles=(.*)
@@ -114,6 +135,7 @@ function __brujula_prompt() {
 
 # for development only (to run without sourcing):
 if [[ "$1" == "run" ]]; then
+    BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/./}
     function __brujula_priv_run() {
         local before now total reps i
         before=${EPOCHREALTIME/./}
@@ -130,4 +152,13 @@ if [[ "$1" == "run" ]]; then
     }
 
     __brujula_priv_run "$@"
+fi
+
+if [[ "$1" == "install" ]]; then
+    # take a substring starting at 0, of 0 chars, and use the $(()) to assign variable
+    # since assigning variables in functions inside PS0 and PS1 does not work
+    # shellcheck disable=SC2016 # shellcheck doesn't see PS0 as special like PS1, PS2, etc.
+    BRUJULA_TIME_UPDATER='${BRUJULA_TIME_UPDATER:0:$((BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/./},0))}'
+    BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/./}
+    PS0="$BRUJULA_TIME_UPDATER"
 fi

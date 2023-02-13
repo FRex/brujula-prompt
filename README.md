@@ -15,7 +15,10 @@ It also shows count of non-hidden and hidden files, in that order, in format:
 `non-hidden.hidden` after the dir path, since I found that info useful daily
 and it was easy to add, especially hidden files that I often forgot to look for.
 
+It also counts the time of every commands, purely in shell.
+
 ![screenshot1](screenshot1.png)
+![screenshot2](screenshot2.png)
 
 Very rudimentary, might have mistakes in it, it has no configuration, doesn't
 handle Windows style paths, bare repos, being inside .git dir itself, anything
@@ -33,7 +36,7 @@ user    0m0.015s
 sys     0m0.030s
 
 $ time __brujula_prompt > /dev/null
-real    0m0.001s
+real    0m0.004s
 user    0m0.000s
 sys     0m0.000s
 ```
