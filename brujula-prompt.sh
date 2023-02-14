@@ -117,8 +117,6 @@ function __brujula_prompt() {
             # print them in different colors
             local fullpath="\u001b[33m$path1\u001b[0m\u001b[32m$path2\u001b[0m"
 
-            local hiddenfiles=(.*)
-
             # if we stripped ref prefix its a branch HEAD, else its commit
             if [[ "$trimmedline" != "$line" ]]; then
                 echo -e "$fullpath $normalfilescount.$hiddenfilescount \u001b[36m($trimmedline)\u001b[0m $lastcommandstatus"
