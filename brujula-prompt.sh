@@ -1,6 +1,7 @@
 #!/bin/bash
 # NOTE: this script is meant to be safe to source, pretty much no matter what
 
+# TODO: merge into the main function and put return code and time in it too
 function __brujula_priv_print_deleted_pwd() {
     # amount of iterations, could come from an env var later
     # delete dir is a bad case so set a very high limit here
@@ -13,7 +14,7 @@ function __brujula_priv_print_deleted_pwd() {
             local path2=${PWD#"$p"}
             local path1=${PWD%"$path2"}
             [[ $path1 == $HOME* ]] && path1="${path1//"$HOME"/'~'}"
-            echo -e "\u001b[33m$path1\u001b[0m\u001b[31m$path2\u001b[0m"
+            echo -e "$1 \u001b[33m$path1\u001b[0m\u001b[31m$path2\u001b[0m"
             break
         fi
 
@@ -22,7 +23,7 @@ function __brujula_priv_print_deleted_pwd() {
 
         # strange case, can happen with git bash and deleted ramdisk on windows
         if [ -z "$p" ]; then
-            echo -e "\u001b[31m$PWD\u001b[0m"
+            echo -e "$1 \u001b[31m$PWD\u001b[0m"
             break
         fi
     done
@@ -61,9 +62,10 @@ function __brujula_prompt() {
     local hiddenfiles=(.*)
     local hiddenfilescount="${#hiddenfiles[@]}"
 
+    local userathost="\u001b[32m$USERNAME@$HOSTNAME\u001b[0m"
     # each dir has itself . and parent dir .. so less than 2 hidden files = deleted dir
     if [[ "$hiddenfilescount" -lt 2 ]]; then
-        __brujula_print_deleted_pwd
+        __brujula_priv_print_deleted_pwd "$userathost"
         return
     fi
 
@@ -91,7 +93,7 @@ function __brujula_prompt() {
         if [[ -z "$p" ]]; then
             local path1="$PWD"
             [[ $path1 == $HOME* ]] && path1="${path1//"$HOME"/'~'}"
-            echo -e "\u001b[33m$path1\u001b[0m $normalfilescount.$hiddenfilescount $lastcommandstatus"
+            echo -e "$userathost \u001b[33m$path1\u001b[0m $normalfilescount.$hiddenfilescount $lastcommandstatus"
             break
         fi
 
@@ -119,9 +121,9 @@ function __brujula_prompt() {
 
             # if we stripped ref prefix its a branch HEAD, else its commit
             if [[ "$trimmedline" != "$line" ]]; then
-                echo -e "$fullpath $normalfilescount.$hiddenfilescount \u001b[36m($trimmedline)\u001b[0m $lastcommandstatus"
+                echo -e "$userathost $fullpath $normalfilescount.$hiddenfilescount \u001b[36m($trimmedline)\u001b[0m $lastcommandstatus"
             else
-                echo -e "$fullpath $normalfilescount.$hiddenfilescount \u001b[32m($trimmedline)\u001b[0m $lastcommandstatus"
+                echo -e "$userathost $fullpath $normalfilescount.$hiddenfilescount \u001b[32m($trimmedline)\u001b[0m $lastcommandstatus"
             fi
             break
         fi
