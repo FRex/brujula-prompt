@@ -93,7 +93,7 @@ function __brujula_prompt() {
         if [[ -z "$p" ]]; then
             local path1="$PWD"
             [[ $path1 == $HOME* ]] && path1="${path1//"$HOME"/'~'}"
-            echo -e "$userathost \u001b[33m$path1\u001b[0m $normalfilescount.$hiddenfilescount $lastcommandstatus"
+            echo -e "$userathost \u001b[33m$path1\u001b[0m $normalfilescount.$hiddenfilescount CMD=$BRUJULA_COMMAND_COUNT $lastcommandstatus"
             break
         fi
 
@@ -121,9 +121,9 @@ function __brujula_prompt() {
 
             # if we stripped ref prefix its a branch HEAD, else its commit
             if [[ "$trimmedline" != "$line" ]]; then
-                echo -e "$userathost $fullpath $normalfilescount.$hiddenfilescount \u001b[36m($trimmedline)\u001b[0m $lastcommandstatus"
+                echo -e "$userathost $fullpath $normalfilescount.$hiddenfilescount \u001b[36m($trimmedline)\u001b[0m CMD=$BRUJULA_COMMAND_COUNT $lastcommandstatus"
             else
-                echo -e "$userathost $fullpath $normalfilescount.$hiddenfilescount \u001b[32m($trimmedline)\u001b[0m $lastcommandstatus"
+                echo -e "$userathost $fullpath $normalfilescount.$hiddenfilescount \u001b[32m($trimmedline)\u001b[0m CMD=$BRUJULA_COMMAND_COUNT $lastcommandstatus"
             fi
             break
         fi
@@ -136,6 +136,8 @@ function __brujula_prompt() {
 # for development only (to run without sourcing):
 if [[ "$1" == "run" ]]; then
     BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/./}
+    BRUJULA_COMMAND_COUNT=0
+
     function __brujula_priv_run() {
         local before now total reps i
         before=${EPOCHREALTIME/./}
@@ -160,5 +162,10 @@ if [[ "$1" == "install" ]]; then
     # shellcheck disable=SC2016 # shellcheck doesn't see PS0 as special like PS1, PS2, etc.
     BRUJULA_TIME_UPDATER='${BRUJULA_TIME_UPDATER:0:$((BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/./},0))}'
     BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/./}
-    PS0="$BRUJULA_TIME_UPDATER"
+
+    # shellcheck disable=SC2034 # i use this variable in the PS0, to count total commands
+    BRUJULA_COMMAND_COUNT=0
+
+    # shellcheck disable=SC2016 # shellcheck doesn't see PS0 as special like PS1, PS2, etc.
+    PS0="$BRUJULA_TIME_UPDATER"'${BRUJULA_TIME_UPDATER:0:$((BRUJULA_COMMAND_COUNT=$((BRUJULA_COMMAND_COUNT + 1)),0))}'
 fi
