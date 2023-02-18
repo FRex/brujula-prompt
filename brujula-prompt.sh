@@ -31,7 +31,7 @@ function __brujula_priv_print_deleted_pwd() {
 
 function __brujula_prompt() {
     local laststatus="$?"
-    local before now elapsed
+    local before now elapsed uptimeseconds
 
     now="${EPOCHREALTIME/./}"
     before="$BRUJULA_EPOCHREALTIME"
@@ -89,6 +89,20 @@ function __brujula_prompt() {
     # amount of iterations, could come from an env var later
     local x=24
 
+    # grab the first value from that file, and remove anything post first space
+    # then anything post first dot (that file contains two floating numbers)
+    read -r uptimeseconds </proc/uptime
+    uptimeseconds=${uptimeseconds%% *}
+    uptimeseconds=${uptimeseconds%%.*}
+
+    local minutes="$((uptimeseconds / 60))"
+    local hours="$((minutes / 60))"
+    local minutes="$((minutes % 60))"
+    # ensure minutes is a 2 digit string, even if its from 0 to 9
+    [[ "${#minutes}" -eq 1 ]] && minutes="0$minutes"
+
+    local endpart="UP=$hours:$minutes CMD=$BRUJULA_COMMAND_COUNT $lastcommandstatus"
+
     # c like for loop allows $x, {1..24} syntax wouldn't
     local i
     for ((i = 0; i < x; i++)); do
@@ -96,7 +110,7 @@ function __brujula_prompt() {
         if [[ -z "$p" ]]; then
             local path1="$PWD"
             [[ $path1 == $HOME* ]] && path1="${path1//"$HOME"/'~'}"
-            echo -e "$userathost \u001b[33m$path1\u001b[0m $normalfilescount.$hiddenfilescount CMD=$BRUJULA_COMMAND_COUNT $lastcommandstatus"
+            echo -e "$userathost \u001b[33m$path1\u001b[0m $normalfilescount.$hiddenfilescount $endpart"
             break
         fi
 
@@ -124,9 +138,9 @@ function __brujula_prompt() {
 
             # if we stripped ref prefix its a branch HEAD, else its commit
             if [[ "$trimmedline" != "$line" ]]; then
-                echo -e "$userathost $fullpath $normalfilescount.$hiddenfilescount \u001b[36m($trimmedline)\u001b[0m CMD=$BRUJULA_COMMAND_COUNT $lastcommandstatus"
+                echo -e "$userathost $fullpath $normalfilescount.$hiddenfilescount \u001b[36m($trimmedline)\u001b[0m $endpart"
             else
-                echo -e "$userathost $fullpath $normalfilescount.$hiddenfilescount \u001b[32m($trimmedline)\u001b[0m CMD=$BRUJULA_COMMAND_COUNT $lastcommandstatus"
+                echo -e "$userathost $fullpath $normalfilescount.$hiddenfilescount \u001b[32m($trimmedline)\u001b[0m $endpart"
             fi
             break
         fi
