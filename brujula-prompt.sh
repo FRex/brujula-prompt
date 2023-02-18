@@ -36,6 +36,9 @@ function __brujula_prompt() {
     now="${EPOCHREALTIME/./}"
     before="$BRUJULA_EPOCHREALTIME"
 
+    # figure out username based on the two variables
+    local username="${USER:-$USERNAME}"
+
     # format time nicely into seconds.milliseconds
     # add at least two zeroes, so even 1 millisecond becomes at least 001
     elapsed="00$(((now - before) / 1000))"
@@ -62,7 +65,7 @@ function __brujula_prompt() {
     local hiddenfiles=(.*)
     local hiddenfilescount="${#hiddenfiles[@]}"
 
-    local userathost="\u001b[32m$USERNAME\u001b[33m@\u001b[32m$HOSTNAME\u001b[0m"
+    local userathost="\u001b[32m$username\u001b[33m@\u001b[32m$HOSTNAME\u001b[0m"
     # each dir has itself . and parent dir .. so less than 2 hidden files = deleted dir
     if [[ "$hiddenfilescount" -lt 2 ]]; then
         __brujula_priv_print_deleted_pwd "$userathost"
