@@ -156,7 +156,17 @@ if [[ "$1" == "run" ]]; then
     __brujula_priv_run "$@"
 fi
 
+function __brujula_set_title() {
+    # set the title via the escape sequence, just path, for now
+    local fullpath="$PWD"
+    [[ $fullpath == $HOME* ]] && fullpath="${fullpath//"$HOME"/'~'}"
+    echo -e "\033]0;$fullpath\a"
+}
+
 if [[ "$1" == "install" ]]; then
+    # to always make sure the title is up to date
+    PROMPT_COMMAND='__brujula_set_title'
+
     # take a substring starting at 0, of 0 chars, and use the $(()) to assign variable
     # since assigning variables in functions inside PS0 and PS1 does not work
     # shellcheck disable=SC2016 # shellcheck doesn't see PS0 as special like PS1, PS2, etc.
