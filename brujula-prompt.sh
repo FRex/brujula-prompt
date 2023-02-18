@@ -157,6 +157,7 @@ if [[ "$1" == "run" ]]; then
 
     function __brujula_priv_run() {
         local before now total reps i
+        echo
         before=${EPOCHREALTIME/./}
         total=0
         reps="${2:-125}"
