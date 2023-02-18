@@ -164,7 +164,7 @@ if [[ "$1" == "run" ]]; then
             __brujula_prompt
             now=${EPOCHREALTIME/./}
             total="$((total + now - before))"
-            echo "$((now - before)) microseconds"
+            echo "$((now - before)) microseconds"$'\n'
             before="$now"
         done
         echo "$((total / reps)) microseconds average over $reps runs"
