@@ -181,7 +181,7 @@ function __brujula_set_title() {
     echo -e "\033]0;$fullpath\a"
 }
 
-if [[ "$1" == "install" ]]; then
+if [[ "$1" == "install" || "$1" == "fullinstall2" ]]; then
     # to always make sure the title is up to date
     PROMPT_COMMAND='__brujula_set_title'
 
@@ -196,4 +196,10 @@ if [[ "$1" == "install" ]]; then
 
     # shellcheck disable=SC2016 # shellcheck doesn't see PS0 as special like PS1, PS2, etc.
     PS0="$BRUJULA_TIME_UPDATER"'${BRUJULA_TIME_UPDATER:0:$((BRUJULA_COMMAND_COUNT=$((BRUJULA_COMMAND_COUNT + 1)),0))}'
+fi
+
+if [[ "$1" == "fullinstall2" ]]; then
+    # a nice 2 line prompt, writing area is always full with, and it also
+    # prevents broken offset prompt if last command had no final newline
+    PS1='\n`__brujula_prompt`\n$ '"$BRUJULA_TIME_UPDATER"
 fi
