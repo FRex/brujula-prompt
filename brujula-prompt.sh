@@ -33,7 +33,7 @@ function __brujula_prompt() {
     local laststatus="$?"
     local before now elapsed uptimeseconds
 
-    now="${EPOCHREALTIME/./}"
+    now="${EPOCHREALTIME/[.,]/}"
     before="$BRUJULA_EPOCHREALTIME"
 
     # figure out username based on the two variables
@@ -152,18 +152,18 @@ function __brujula_prompt() {
 
 # for development only (to run without sourcing):
 if [[ "$1" == "run" ]]; then
-    BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/./}
+    BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/[.,]/}
     BRUJULA_COMMAND_COUNT=0
 
     function __brujula_priv_run() {
         local before now total reps i
         echo
-        before=${EPOCHREALTIME/./}
+        before=${EPOCHREALTIME/[.,]/}
         total=0
         reps="${2:-125}"
         for ((i = 0; i < reps; i++)); do
             __brujula_prompt
-            now=${EPOCHREALTIME/./}
+            now=${EPOCHREALTIME/[.,]/}
             total="$((total + now - before))"
             echo "$((now - before)) microseconds"$'\n'
             before="$now"
@@ -188,8 +188,8 @@ if [[ "$1" == "install" || "$1" == "fullinstall2" ]]; then
     # take a substring starting at 0, of 0 chars, and use the $(()) to assign variable
     # since assigning variables in functions inside PS0 and PS1 does not work
     # shellcheck disable=SC2016 # shellcheck doesn't see PS0 as special like PS1, PS2, etc.
-    BRUJULA_TIME_UPDATER='${BRUJULA_TIME_UPDATER:0:$((BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/./},0))}'
-    BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/./}
+    BRUJULA_TIME_UPDATER='${BRUJULA_TIME_UPDATER:0:$((BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/[.,]/},0))}'
+    BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/[.,]/}
 
     # shellcheck disable=SC2034 # i use this variable in the PS0, to count total commands
     BRUJULA_COMMAND_COUNT=0
