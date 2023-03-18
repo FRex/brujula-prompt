@@ -68,8 +68,16 @@ function __brujula_prompt() {
     local userathost="\u001b[32m$username\u001b[33m@\u001b[32m$HOSTNAME\u001b[0m"
     # each dir has itself . and parent dir .. so less than 2 hidden files = deleted dir
     if [[ "$hiddenfilescount" -lt 2 ]]; then
-        __brujula_priv_print_deleted_pwd "$userathost"
-        return
+        # in case of globskipdots being on, we can end up here with
+        # hiddenfiles equal to .* so check . dir explicitly
+        if [[ ! -d . ]]; then
+            __brujula_priv_print_deleted_pwd "$userathost"
+            return
+        fi
+
+        # if we are here, that means . and .. exist but user doesn't want
+        # to glob for them with .* so we actually have 0 files
+        hiddenfilescount=0
     fi
 
     local normalfiles=(*)
