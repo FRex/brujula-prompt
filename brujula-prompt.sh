@@ -186,7 +186,12 @@ function __brujula_set_title() {
     # set the title via the escape sequence, just path, for now
     local fullpath="$PWD"
     [[ $fullpath == $HOME* ]] && fullpath="${fullpath//"$HOME"/'~'}"
-    echo -e "\033]0;$fullpath\a"
+    echo -en "\033]0;$fullpath\a"
+    # only print newline here on 2nd, 3rd, etc. time, to not have newline
+    # before first print of the prompt in a new window/terminal/tab
+    # not using BRUJULA_COMMAND_COUNT -ne 0 since that would not catch
+    # the case of new terminal, 0 real commands and just pressing enter
+    [[ "$BRUJULA_EPOCHREALTIME_ORIGINAL_CONST" -ne "$BRUJULA_EPOCHREALTIME" ]] && echo
 }
 
 if [[ "$1" == "install" || "$1" == "fullinstall2" ]]; then
@@ -197,7 +202,12 @@ if [[ "$1" == "install" || "$1" == "fullinstall2" ]]; then
     # since assigning variables in functions inside PS0 and PS1 does not work
     # shellcheck disable=SC2016 # shellcheck doesn't see PS0 as special like PS1, PS2, etc.
     BRUJULA_TIME_UPDATER='${BRUJULA_TIME_UPDATER:0:$((BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/[.,]/},0))}'
-    BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/[.,]/}
+
+    # BRUJULA_EPOCHREALTIME_ORIGINAL_CONST never changes, so if its same as BRUJULA_EPOCHREALTIME
+    # that means 0 commands were run (including zero empty lines with enter, which don't add to
+    # BRUJULA_COMMAND_COUNT), this is used in __brujula_set_title to print newlines where needed
+    BRUJULA_EPOCHREALTIME_ORIGINAL_CONST=${EPOCHREALTIME/[.,]/}
+    BRUJULA_EPOCHREALTIME="$BRUJULA_EPOCHREALTIME_ORIGINAL_CONST"
 
     # shellcheck disable=SC2034 # i use this variable in the PS0, to count total commands
     BRUJULA_COMMAND_COUNT=0
@@ -209,5 +219,5 @@ fi
 if [[ "$1" == "fullinstall2" ]]; then
     # a nice 2 line prompt, writing area is always full with, and it also
     # prevents broken offset prompt if last command had no final newline
-    PS1='\n`__brujula_prompt`\n$ '"$BRUJULA_TIME_UPDATER"
+    PS1='`__brujula_prompt`\n$ '"$BRUJULA_TIME_UPDATER"
 fi
