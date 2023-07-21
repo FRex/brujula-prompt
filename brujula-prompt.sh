@@ -70,6 +70,7 @@ function __brujula_prompt() {
     if [[ "$hiddenfilescount" -lt 2 ]]; then
         # in case of globskipdots being on, we can end up here with
         # hiddenfiles equal to .* so check . dir explicitly
+        # to check if its on/off in bash: shopt | grep globskipdots
         if [[ ! -d . ]]; then
             __brujula_priv_print_deleted_pwd "$userathost"
             return
