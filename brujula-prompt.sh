@@ -225,6 +225,5 @@ if [[ "$1" == "fullinstall2" ]]; then
     # a nice 2 line prompt, writing area is always full with, and it also
     # prevents broken offset prompt if last command had no final newline
     PS1='`__brujula_prompt`\n$ '"${BRUJULA_TIME_UPDATER}${BRUJULA_RENDER_COUNTER_TRIGGER}"
-    # alias clear='BRUJULA_RENDER_COUNTER_LAST_CLEAR=$BRUJULA_RENDER_COUNTER;'"echo -ne '\e[H\e[2J\e[3J'"
     alias clear='BRUJULA_RENDER_COUNTER_LAST_CLEAR=$BRUJULA_RENDER_COUNTER;clear'
 fi
