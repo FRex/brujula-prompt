@@ -192,7 +192,7 @@ function __brujula_set_title() {
     # before first print of the prompt in a new window/terminal/tab
     # not using BRUJULA_COMMAND_COUNT -ne 0 since that would not catch
     # the case of new terminal, 0 real commands and just pressing enter
-    [[ "$BRUJULA_EPOCHREALTIME_ORIGINAL_CONST" -ne "$BRUJULA_EPOCHREALTIME" ]] && echo
+    [[ "$BRUJULA_RENDER_COUNTER" -ne "$BRUJULA_RENDER_COUNTER_LAST_CLEAR" ]] && echo
 }
 
 if [[ "$1" == "install" || "$1" == "fullinstall2" ]]; then
@@ -201,8 +201,17 @@ if [[ "$1" == "install" || "$1" == "fullinstall2" ]]; then
 
     # take a substring starting at 0, of 0 chars, and use the $(()) to assign variable
     # since assigning variables in functions inside PS0 and PS1 does not work
-    # shellcheck disable=SC2016 # shellcheck doesn't see PS0 as special like PS1, PS2, etc.
+    # shellcheck disable=SC2016 # this is expanded elsewhere so single quotes here are okay
     BRUJULA_TIME_UPDATER='${BRUJULA_TIME_UPDATER:0:$((BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/[.,]/},0))}'
+
+    # shellcheck disable=SC2034 # i use this in BRUJULA_RENDER_COUNTER_TRIGGER
+    BRUJULA_RENDER_COUNTER=0
+
+    # shellcheck disable=SC2034 # i use this in __brujula_set_title
+    BRUJULA_RENDER_COUNTER_LAST_CLEAR=0
+
+    # shellcheck disable=SC2016 # this is expanded elsewhere so single quotes here are okay
+    BRUJULA_RENDER_COUNTER_TRIGGER='${BRUJULA_TIME_UPDATER:0:$((BRUJULA_RENDER_COUNTER=$((BRUJULA_RENDER_COUNTER+1)),0))}'
 
     # BRUJULA_EPOCHREALTIME_ORIGINAL_CONST never changes, so if its same as BRUJULA_EPOCHREALTIME
     # that means 0 commands were run (including zero empty lines with enter, which don't add to
@@ -214,11 +223,13 @@ if [[ "$1" == "install" || "$1" == "fullinstall2" ]]; then
     BRUJULA_COMMAND_COUNT=0
 
     # shellcheck disable=SC2016 # shellcheck doesn't see PS0 as special like PS1, PS2, etc.
-    PS0="$BRUJULA_TIME_UPDATER"'${BRUJULA_TIME_UPDATER:0:$((BRUJULA_COMMAND_COUNT=$((BRUJULA_COMMAND_COUNT + 1)),0))}'
+    PS0="${BRUJULA_RENDER_COUNTER_TRIGGER}${BRUJULA_TIME_UPDATER}"'${BRUJULA_COMMAND_COUNT:0:$((BRUJULA_COMMAND_COUNT=$((BRUJULA_COMMAND_COUNT + 1)),0))}'
 fi
 
 if [[ "$1" == "fullinstall2" ]]; then
     # a nice 2 line prompt, writing area is always full with, and it also
     # prevents broken offset prompt if last command had no final newline
-    PS1='`__brujula_prompt`\n$ '"$BRUJULA_TIME_UPDATER"
+    PS1='`__brujula_prompt`\n$ '"${BRUJULA_TIME_UPDATER}${BRUJULA_RENDER_COUNTER_TRIGGER}"
+    # alias clear='BRUJULA_RENDER_COUNTER_LAST_CLEAR=$BRUJULA_RENDER_COUNTER;'"echo -ne '\e[H\e[2J\e[3J'"
+    alias clear='BRUJULA_RENDER_COUNTER_LAST_CLEAR=$BRUJULA_RENDER_COUNTER;clear'
 fi
