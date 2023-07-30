@@ -194,6 +194,10 @@ function __brujula_set_title() {
 }
 
 if [[ "$1" == "install" || "$1" == "fullinstall2" ]]; then
+    # for the timing of each command, set as soon as possible so time displayed in first prompt is
+    # time between installing prompt and first display, so time of all other init stuff in bashrc
+    BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/[.,]/}
+
     # to always make sure the title is up to date
     PROMPT_COMMAND='__brujula_set_title'
 
@@ -210,9 +214,6 @@ if [[ "$1" == "install" || "$1" == "fullinstall2" ]]; then
 
     # shellcheck disable=SC2016 # this is expanded elsewhere so single quotes here are okay
     BRUJULA_RENDER_COUNTER_TRIGGER='${BRUJULA_TIME_UPDATER:0:$((BRUJULA_RENDER_COUNTER=$((BRUJULA_RENDER_COUNTER+1)),0))}'
-
-    # for the timing of each command
-    BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/[.,]/}
 
     # shellcheck disable=SC2034 # i use this variable in the PS0, to count total commands, excluding empty lines
     BRUJULA_COMMAND_COUNT=0
