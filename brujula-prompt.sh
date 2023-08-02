@@ -71,7 +71,11 @@ function __brujula_prompt() {
         # in case of globskipdots being on, we can end up here with
         # hiddenfiles equal to .* so check . dir explicitly
         # to check if its on/off in bash: shopt | grep globskipdots
-        if [[ ! -d . ]]; then
+        # the -d works on git bash on Windows, e.g. if the drive gets formatted
+        # the -ef works on Linux and catches both $PWD no longer existing and
+        # being recreated, because . is kept alive so -d reports it exists, but
+        # -ef reports them as unequal due to having different inode numbers
+        if [[ ! -d . ]] || [[ ! . -ef "$PWD" ]]; then
             __brujula_priv_print_deleted_pwd "$userathost"
             return
         fi
