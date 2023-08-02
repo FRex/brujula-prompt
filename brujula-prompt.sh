@@ -163,7 +163,7 @@ function __brujula_prompt() {
     done
 }
 
-# for development only (to run without sourcing):
+# for development only (to benchmark):
 if [[ "$1" == "run" ]]; then
     # TODO: assign other variables i need here, even though by default
     # they get treated as 0 when i later $(( + 1)) then
