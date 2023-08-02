@@ -199,7 +199,7 @@ function __brujula_set_title() {
     [[ "$BRUJULA_RENDER_COUNTER" -ne "$BRUJULA_RENDER_COUNTER_LAST_CLEAR" ]] && echo
 }
 
-if [[ "$1" == "install" || "$1" == "fullinstall2" ]]; then
+if [[ "$1" == "install" ]]; then
     # for the timing of each command, set as soon as possible so time displayed in first prompt is
     # time between installing prompt and first display, so time of all other init stuff in bashrc
     BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/[.,]/}
@@ -226,11 +226,17 @@ if [[ "$1" == "install" || "$1" == "fullinstall2" ]]; then
 
     # shellcheck disable=SC2016 # shellcheck doesn't see PS0 as special like PS1, PS2, etc.
     PS0="${BRUJULA_RENDER_COUNTER_TRIGGER}${BRUJULA_TIME_UPDATER}"'${BRUJULA_COMMAND_COUNT:0:$((BRUJULA_COMMAND_COUNT=$((BRUJULA_COMMAND_COUNT + 1)),0))}'
-fi
 
-if [[ "$1" == "fullinstall2" ]]; then
     # a nice 2 line prompt, writing area is always full with, and it also
     # prevents broken offset prompt if last command had no final newline
     PS1='`__brujula_prompt`\n$ '"${BRUJULA_TIME_UPDATER}${BRUJULA_RENDER_COUNTER_TRIGGER}"
     alias clear='BRUJULA_RENDER_COUNTER_LAST_CLEAR=$BRUJULA_RENDER_COUNTER;clear'
+fi
+
+if [[ "$1" != "install" && "$1" != "run" ]]; then
+    echo "To run a benchmark:"
+    echo "$BASH $0 run 10 # last argument is reps (optional)"
+    echo
+    echo "To install the prompt source the script:"
+    echo ". $0 install"
 fi
