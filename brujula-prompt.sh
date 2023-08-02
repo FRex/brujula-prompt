@@ -165,6 +165,8 @@ function __brujula_prompt() {
 
 # for development only (to run without sourcing):
 if [[ "$1" == "run" ]]; then
+    # TODO: assign other variables i need here, even though by default
+    # they get treated as 0 when i later $(( + 1)) then
     BRUJULA_EPOCHREALTIME=${EPOCHREALTIME/[.,]/}
     BRUJULA_COMMAND_COUNT=0
 
