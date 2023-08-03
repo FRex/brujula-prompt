@@ -3,7 +3,9 @@
 Just source (via `source` or `.` builtin) the `brujula-prompt.sh` in your
 `.bashrc` and then add ``__brujula_prompt`` to your `PS1`. Look at how
 `__git_ps1` (comes with git-bash) is used and also replace the `\w` part
-(that is current working directory). It does not call any external programs.
+(that is current working directory). It does not call any external programs
+(except for `git status --porcelain=v1` in a git repo if
+`BRUJULA_USE_GIT_STATUS` is set to non-empty string)
 Named by Spanish word for compass (brújula) since it shows you
 where you are (path to repo, path in repo, branch/commit in repo).
 

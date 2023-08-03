@@ -149,11 +149,30 @@ function __brujula_prompt() {
             # print them in different colors
             local fullpath="\u001b[33m$path1\u001b[0m\u001b[32m$path2\u001b[0m"
 
+            local changemark=''
+            if [[ -n "$BRUJULA_USE_GIT_STATUS" ]]; then
+                local gotany=0 gotdel=0 gotmod=0 gotadd=0 gotnew=0
+                while read -r line; do
+                    local c="${line::1}"
+                    gotany=1
+                    [[ "$c" == "D" ]] && gotdel=1
+                    [[ "$c" == "M" ]] && gotmod=1
+                    [[ "$c" == "A" ]] && gotadd=1
+                    [[ "$c" == "?" ]] && gotnew=1
+                done < <(git status --porcelain=v1)
+
+                [[ "$gotdel" -eq 1 ]] && changemark="${changemark}D"
+                [[ "$gotmod" -eq 1 ]] && changemark="${changemark}M"
+                [[ "$gotadd" -eq 1 ]] && changemark="${changemark}A"
+                [[ "$gotnew" -eq 1 ]] && changemark="${changemark}?"
+                [[ "$gotany" -eq 1 && -z "$changemark" ]] && changemark='*'
+            fi
+
             # if we stripped ref prefix its a branch HEAD, else its commit
             if [[ "$trimmedline" != "$line" ]]; then
-                echo -e "$userathost $fullpath $normalfilescount.$hiddenfilescount \u001b[36m($trimmedline)\u001b[0m $endpart"
+                echo -e "$userathost $fullpath $normalfilescount.$hiddenfilescount \u001b[36m($trimmedline\u001b[31m$changemark\u001b[36m)\u001b[0m $endpart"
             else
-                echo -e "$userathost $fullpath $normalfilescount.$hiddenfilescount \u001b[32m($trimmedline)\u001b[0m $endpart"
+                echo -e "$userathost $fullpath $normalfilescount.$hiddenfilescount \u001b[32m($trimmedline\u001b[31m$changemark\u001b[32m)\u001b[0m $endpart"
             fi
             break
         fi
