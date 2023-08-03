@@ -171,19 +171,23 @@ if [[ "$1" == "run" ]]; then
     BRUJULA_COMMAND_COUNT=0
 
     function __brujula_priv_run() {
-        local before now total reps i
+        local before now total reps smallest elapsed i
         echo
-        before=${EPOCHREALTIME/[.,]/}
         total=0
+        smallest=999123123
         reps="${2:-125}"
         for ((i = 0; i < reps; i++)); do
+            before=${EPOCHREALTIME/[.,]/}
             __brujula_prompt
             now=${EPOCHREALTIME/[.,]/}
-            total="$((total + now - before))"
-            echo "$((now - before)) microseconds"$'\n'
-            before="$now"
+            elapsed=$((now - before))
+            total=$((total + elapsed))
+            echo "$elapsed microseconds"$'\n'
+            if [[ $elapsed -lt "$smallest" ]]; then
+                smallest=$elapsed
+            fi
         done
-        echo "$((total / reps)) microseconds average over $reps runs"
+        echo "$smallest min and $((total / reps)) average microseconds over $reps runs"
     }
 
     __brujula_priv_run "$@"
