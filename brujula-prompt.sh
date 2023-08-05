@@ -151,17 +151,19 @@ function __brujula_prompt() {
 
             local changemark=''
             if [[ -n "$BRUJULA_USE_GIT_STATUS" ]]; then
-                local gotany=0 gotdel=0 gotmod=0 gotadd=0 gotnew=0
+                local gotany=0 gotdel=0 gotren=0 gotmod=0 gotadd=0 gotnew=0
                 while read -r line; do
                     local c="${line::1}"
                     gotany=1
                     [[ "$c" == "D" ]] && gotdel=1
+                    [[ "$c" == "R" ]] && gotren=1
                     [[ "$c" == "M" ]] && gotmod=1
                     [[ "$c" == "A" ]] && gotadd=1
                     [[ "$c" == "?" ]] && gotnew=1
                 done < <(git status --porcelain=v1)
 
                 [[ "$gotdel" -eq 1 ]] && changemark="${changemark}D"
+                [[ "$gotren" -eq 1 ]] && changemark="${changemark}R"
                 [[ "$gotmod" -eq 1 ]] && changemark="${changemark}M"
                 [[ "$gotadd" -eq 1 ]] && changemark="${changemark}A"
                 [[ "$gotnew" -eq 1 ]] && changemark="${changemark}?"
