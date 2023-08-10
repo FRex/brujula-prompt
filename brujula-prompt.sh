@@ -100,7 +100,7 @@ function __brujula_prompt() {
     local p="$PWD"
 
     # amount of iterations, could come from an env var later
-    local x=24
+    local x=48
 
     # grab the first value from that file, and remove anything post first space
     # then anything post first dot (that file contains two floating numbers)
@@ -140,9 +140,7 @@ function __brujula_prompt() {
             local path1=${PWD%"$path2"}
 
             # make in repo path single slash instead of nothing if in repo root dir
-            if [[ -z "$path2" ]]; then
-                local path2='/'
-            fi
+            [[ -z "$path2" ]] && path2='/'
 
             [[ $path1 == $HOME* ]] && path1="${path1//"$HOME"/'~'}"
 
