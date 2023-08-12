@@ -158,7 +158,7 @@ function __brujula_prompt() {
                     [[ "$c" == "M" ]] && gotmod=1
                     [[ "$c" == "A" ]] && gotadd=1
                     [[ "$c" == "?" ]] && gotnew=1
-                done < <(git status --porcelain=v1)
+                done < <(git status --porcelain=v1 2>/dev/null)
 
                 [[ "$gotdel" -eq 1 ]] && changemark="${changemark}D"
                 [[ "$gotren" -eq 1 ]] && changemark="${changemark}R"
