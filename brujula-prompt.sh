@@ -262,4 +262,5 @@ if [[ "$1" != "install" && "$1" != "run" ]]; then
     echo
     echo "To install the prompt source the script:"
     echo ". $0 install"
+    echo "To enable git status usage also set BRUJULA_USE_GIT_STATUS=1 in your bash."
 fi
