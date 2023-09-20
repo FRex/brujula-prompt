@@ -7,26 +7,37 @@ function __brujula_priv_print_deleted_pwd() {
     # delete dir is a bad case so set a very high limit here
     local x=240
     local p="$PWD"
+    local thisdir=''
+    local backwardspath='.'
+    local baddirs=''
 
     # c like for loop allows $x, {1..24} syntax wouldn't
     for ((i = 0; i < x; i++)); do
-        if [ -d "$p" ]; then
-            local path2=${PWD#"$p"}
-            local path1=${PWD%"$path2"}
-            [[ $path1 == $HOME* ]] && path1="${path1//"$HOME"/'~'}"
-            echo -e "$1 \u001b[33m$path1\u001b[0m\u001b[31m$path2\u001b[0m"
+        # if the dir exists and is same then quit the loop
+        if [[ "$p" -ef "$backwardspath" ]]; then
             break
         fi
 
-        # cut off one /dir off the end of the path
+        # cut off one /dir off the end of the path and go up one dir with ..
+        thisdir=${p##*/}
         p=${p%/*}
+        backwardspath="$backwardspath/.."
+
+        # color dirs that exist (but are different) as magenta, deleted as red
+        if [[ -d "$p/$thisdir" ]]; then
+            baddirs="\u001b[35m/$thisdir\u001b[0m$baddirs"
+        else
+            baddirs="\u001b[31m/$thisdir\u001b[0m$baddirs"
+        fi
 
         # strange case, can happen with git bash and deleted ramdisk on windows
         if [ -z "$p" ]; then
-            echo -e "$1 \u001b[31m$PWD\u001b[0m"
+            # echo -e "$1 \u001b[31m$PWD\u001b[0m"
             break
         fi
     done
+
+    echo -e "$1 \u001b[33m$p\u001b[0m$baddirs"
 }
 
 function __brujula_prompt() {
