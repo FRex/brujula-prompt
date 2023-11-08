@@ -73,8 +73,12 @@ function __brujula_prompt() {
         local lastcommandstatus="\u001b[31m$laststatus\u001b[0m $elapsed"
     fi
 
-    local hiddenfiles=(.*)
-    local hiddenfilescount="${#hiddenfiles[@]}"
+    if [[ -z "$BRUJULA_NO_FILE_COUNT" ]]; then
+        local hiddenfiles=(.*)
+        local hiddenfilescount="${#hiddenfiles[@]}"
+    else
+        local hiddenfilescount='OFF'
+    fi
 
     local userathost="\u001b[32m$username\u001b[33m@\u001b[32m$HOSTNAME\u001b[0m"
     # each dir has itself . and parent dir .. so less than 2 hidden files = deleted dir
@@ -96,9 +100,13 @@ function __brujula_prompt() {
         hiddenfilescount=0
     fi
 
-    local normalfiles=(*)
-    local normalfilescount="${#normalfiles[@]}"
-
+    if [[ -z "$BRUJULA_NO_FILE_COUNT" ]]; then
+        local normalfiles=(*)
+        local normalfilescount="${#normalfiles[@]}"
+    else
+        local normalfilescount='OFF'
+        local hiddenfilescount='OFF' # setting again since in the if above we set it to 0
+    fi
     # if nullglob is enabled then count is 0 and we return it directly in else
     # but if its disabled (by default its disabled) then for empty dirs we
     # end up with a 1 element array with '*' in it, so this check catches that
@@ -274,4 +282,5 @@ if [[ "$1" != "install" && "$1" != "run" ]]; then
     echo "To install the prompt source the script:"
     echo ". $0 install"
     echo "To enable git status usage also set BRUJULA_USE_GIT_STATUS=1 in your bash."
+    echo "To disable file counts (to improve performance for very large directories) you can set BRUJULA_NO_FILE_COUNT=1 in your bash."
 fi

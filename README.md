@@ -9,7 +9,7 @@ A pure bash prompt on Windows and Linux. Tested on Ubuntu 20.04 LTS, Fedora and 
 Information shown is, in order:
 1. username@hostname,
 1. current working directory, including ~ for home, green for part inside git repo, and red if directory was deleted, magenta if it was deleted but created again (so going to it with `..` will not bring you there).
-1. count of files and hidden files as matched by globs `*` and `.*` (so your bash glob settings affect this).
+1. count of files and hidden files as matched by globs `*` and `.*` (so your bash glob settings affect this) unless `BRUJULA_NO_FILE_COUNT` is set, then it's `OFF` instead of a number (you can do that if you have a very large directory and performance becomes an issue).
 1. (if inside git repo) current branch name or commit hash (if in detached head mode).
 1. (if inside git repo and `BRUJULA_USE_GIT_STATUS` is non-empty) symbols as in `git status --porcelain`, `D` for deletion, `?` for new file, `A` for new file added with git add, `M` for renamed file, etc.
 1. uptime taken from `/proc/uptime`.
