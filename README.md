@@ -41,7 +41,7 @@ fancy or out of the ordinary, showing excluded/ignored
 directories in different color, showing where submodules dirs start and end,
 etc. but it might do some or all of these things in the future.
 
-It will also be slow on big directories due to counting number of files (I might add option to disable this).
+It will also be slow on big directories due to counting number of files (you can disable it setting `BRUJULA_NO_FILE_COUNT` to any non-empty string).
 
 I'm also not testing a single line prompt, so it might fail in that case (due to color codes not being marked with extra marks for bash as they should be, so bash might count the characters in them when calculating max line length after the prompt in case of a single line prompt).
 
