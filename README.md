@@ -2,6 +2,9 @@
 
 A pure bash prompt on Windows and Linux. Tested on Ubuntu 20.04 LTS, Fedora and on Windows 10 (git bash).
 
+Uses `$EPOCHREALTIME`, which was added in [Bash 5.0](https://lists.gnu.org/archive/html/info-gnu/2019-01/msg00010.html).
+
+
 # Information
 
 ![screenshot1](screenshot1.png)
@@ -18,6 +21,7 @@ Information shown is, in order:
 1. time taken by last command in seconds and milliseconds.
 1. a newline and a `$` sign and a space, to provide prompt of same width as the terminal.
 
+
 # Usage
 
 To use Brujula, clone or download this repo (or just the `brujula-prompt.sh` file) and add such a line (with adjusted path) to your .bashrc or execute it manually: `source 'D:/brujula-prompt/brujula-prompt.sh' install`
@@ -30,6 +34,7 @@ You can use `__brujula_prompt` and other necessary variables (needed for interna
 If you're interested in using Brujula this way (without using the install option to fit it into your own prompt instead) - open an issue.
 
 These instructions are also printed if you run the script without sourcing it `bash brujula-prompt.sh`. To benchmark/test you can use `bash brujula-prompt.sh run 5` (the number at the end is amount of repetitions to do).
+
 
 # Trivia
 
