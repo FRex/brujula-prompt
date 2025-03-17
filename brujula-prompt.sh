@@ -94,10 +94,6 @@ function __brujula_prompt() {
             __brujula_priv_print_deleted_pwd "$userathost"
             return
         fi
-
-        # if we are here, that means . and .. exist but user doesn't want
-        # to glob for them with .* so we actually have 0 files
-        hiddenfilescount=0
     fi
 
     if [[ -z "$BRUJULA_NO_FILE_COUNT" ]]; then
