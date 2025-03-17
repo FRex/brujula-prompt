@@ -2,7 +2,10 @@
 
 A pure bash prompt on Windows and Linux. Tested on Ubuntu 20.04 LTS, Fedora and on Windows 10 (git bash).
 
-Uses `$EPOCHREALTIME`, which was added in [Bash 5.0](https://lists.gnu.org/archive/html/info-gnu/2019-01/msg00010.html).
+Uses `$EPOCHREALTIME`, which was added in [Bash 5.0](https://lists.gnu.org/archive/html/info-gnu/2019-01/msg00010.html),
+so it won't work on OS X which has a very old bash version. You can try bash from Homebrew or zsh.
+
+I didn't test with zsh at all, but if you try and find it doesn't work let me know by opening an issue or via e-mail.
 
 
 # Information
