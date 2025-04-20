@@ -94,6 +94,11 @@ function __brujula_prompt() {
             __brujula_priv_print_deleted_pwd "$userathost"
             return
         fi
+
+        # if hiddenfiles array is just .* because glob failed then say 0 hidden files
+        if [[ "${hiddenfiles[0]}" == ".*" ]] && [[ ! -f "${hiddenfiles[0]}" ]]; then
+            hiddenfilescount=0
+        fi
     fi
 
     if [[ -z "$BRUJULA_NO_FILE_COUNT" ]]; then
